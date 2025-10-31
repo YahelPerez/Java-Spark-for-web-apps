@@ -1,0 +1,27 @@
+{{! Lista de artículos }}
+<div class="container">
+    <div class="header">
+        <h1>Available Collectibles</h1>
+        <p>Browse our unique collection of rare and valuable items</p>
+    </div>
+
+    <div class="items-grid">
+        {{#items}}
+        <article class="item-card">
+            <div class="item-card__content">
+                <h2 class="item-card__title">{{name}}</h2>
+                <p class="item-card__description">{{description}}</p>
+                <div class="item-card__price">${{getCurrentPrice}}</div>
+                <p class="item-card__bids">{{bidCount}} bids</p>
+                <a href="/items/{{id}}" class="item-card__link">View Details</a>
+            </div>
+        </article>
+        {{/items}}
+        {{^items}}
+        <div class="text-center mt-2">
+            <h2>No items currently available</h2>
+            <p class="mb-2">Check back soon for new additions to our collection!</p>
+        </div>
+        {{/items}}
+    </div>
+</div>

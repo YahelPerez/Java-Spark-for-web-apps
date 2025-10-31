@@ -1,0 +1,25 @@
+{{! src/main/resources/templates/error.mustache }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - {{errorTitle}}</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="error-container">
+        <h1>{{errorTitle}}</h1>
+        <div class="error-message">
+            {{errorMessage}}
+            {{#field}}
+            <p class="error-field">Field: {{field}}</p>
+            {{/field}}
+        </div>
+        <div class="error-actions">
+            <a href="javascript:history.back()" class="button">Go Back</a>
+            <a href="/items" class="button">Return to Items</a>
+        </div>
+    </div>
+</body>
+</html>
