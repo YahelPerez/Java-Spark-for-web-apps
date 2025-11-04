@@ -41,6 +41,17 @@ public class Item {
     public double getCurrentPrice() {
         return bids.isEmpty() ? startingPrice : getHighestBid().getAmount();
     }
+    
+    public void setStartingPrice(double newPrice) {
+        if (newPrice <= 0) {
+            throw new ValidationException("price", "Price must be greater than 0");
+        }
+        this.startingPrice = newPrice;
+        // Solo transmitir si no hay ofertas, ya que getCurrentPrice() usa startingPrice solo si no hay ofertas
+        if (bids.isEmpty()) {
+            PriceUpdateWebSocket.broadcastPriceUpdate(id, newPrice);
+        }
+    }
 
     public double getMinBid() {
         return getCurrentPrice() + 0.01; // Mínimo incremento de $0.01
@@ -75,6 +86,9 @@ public class Item {
             throw new ValidationException("bidAmount", "Bid amount must be higher than current price");
         }
         bids.add(bid);
+        
+        // Broadcast price update via WebSocket
+        PriceUpdateWebSocket.broadcastPriceUpdate(id, bid.getAmount());
     }
 
     // Helper methods for templates

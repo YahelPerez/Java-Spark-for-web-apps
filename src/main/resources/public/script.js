@@ -1,4 +1,57 @@
+// WebSocket connection for real-time price updates
+let priceSocket;
+
+function connectWebSocket() {
+    // Get the current protocol (ws:// or wss://)
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/websocket/prices`;
+    
+    priceSocket = new WebSocket(wsUrl);
+    
+    priceSocket.onopen = () => {
+        console.log('WebSocket connected');
+    };
+    
+    priceSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'priceUpdate') {
+            updateItemPrice(data.itemId, data.price);
+        }
+    };
+    
+    priceSocket.onclose = () => {
+        console.log('WebSocket closed. Reconnecting...');
+        setTimeout(connectWebSocket, 5000);
+    };
+    
+    priceSocket.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
+}
+
+function updateItemPrice(itemId, price) {
+    // Update price in list view
+    const priceElement = document.querySelector(`[data-item-id="${itemId}"] .item-card__price`);
+    if (priceElement) {
+        priceElement.textContent = `$${price.toLocaleString('es', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+    
+    // Update price in detail view if we're on the detail page
+    const detailPriceElement = document.querySelector('.current-price');
+    if (detailPriceElement && window.location.pathname === `/items/${itemId}`) {
+        detailPriceElement.textContent = `$${price.toLocaleString('es', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize WebSocket connection
+    connectWebSocket();
     // Mantener la funcionalidad existente de la tabla
     const itemListTable = document.querySelector('#item-list-table');
     if (itemListTable) {
