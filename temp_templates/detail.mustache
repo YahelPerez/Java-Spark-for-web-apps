@@ -1,0 +1,70 @@
+{{! Detalles del artículo }}
+<div class="breadcrumb">
+    <a href="/items">Items</a> / <span>{{item.name}}</span>
+</div>
+
+<div class="item-detail">
+    <div class="item-detail-grid">
+        <article class="item-info">
+            <h1 class="item-title">{{item.name}}</h1>
+            <p class="item-description">{{item.description}}</p>
+            
+            <div class="price-info">
+                <div class="current-price">
+                    <span class="label">Current Price:</span>
+                    <span class="amount">${{item.getCurrentPrice}}</span>
+                </div>
+                <div class="bid-info">
+                    <span class="bid-count">{{item.bidCount}} bids</span>
+                    <span class="time-left">{{item.timeLeft}}</span>
+                </div>
+            </div>
+
+            <section class="bidding-section">
+                <h2>Place Your Bid</h2>
+                <form action="/items/{{item.id}}/bid" method="POST" class="bid-form">
+                    <div class="form-group">
+                        <label for="bidderName">Your Name:</label>
+                        <input type="text" id="bidderName" name="bidderName" required
+                               placeholder="Enter your full name"
+                               aria-describedby="bidderNameHelp">
+                        <small id="bidderNameHelp" class="form-help">This name will be visible to other bidders</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bidAmount">Bid Amount ($):</label>
+                        <div class="bid-amount-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="bidAmount" name="bidAmount" required
+                                   min="{{item.minBid}}" step="0.01"
+                                   placeholder="{{item.minBid}}"
+                                   aria-describedby="bidAmountHelp">
+                        </div>
+                        <small id="bidAmountHelp" class="form-help">Minimum bid: ${{item.minBid}}</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="button bid-button">
+                            Place Bid
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            {{#item.recentBids}}
+            <section class="bid-history">
+                <h2>Recent Bids</h2>
+                <div class="bid-list">
+                    {{#.}}
+                    <div class="bid-entry">
+                        <span class="bidder">{{bidderName}}</span>
+                        <span class="bid-amount">${{amount}}</span>
+                        <span class="bid-time">{{timeAgo}}</span>
+                    </div>
+                    {{/.}}
+                </div>
+            </section>
+            {{/item.recentBids}}
+        </article>
+    </div>
+</div>

@@ -16,6 +16,7 @@ function connectWebSocket() {
         const data = JSON.parse(event.data);
         if (data.type === 'priceUpdate') {
             updateItemPrice(data.itemId, data.price);
+            showPriceNotification(data.itemName, data.price);
         }
     };
     
@@ -154,3 +155,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function showPriceNotification(itemName, newPrice) {
+    const notification = document.createElement('div');
+    notification.className = 'price-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <strong>${itemName}</strong>
+            <p>Precio actualizado: $${newPrice.toLocaleString('es', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })}</p>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    // Show notification with animation
+    requestAnimationFrame(() => {
+        notification.classList.add('show');
+    });
+    
+    // Remove notification after 15 seconds (15000ms)
+    setTimeout(() => {
+        notification.classList.remove('show');
+        // Wait for animation to complete before removing element
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 500); // Wait for CSS transition to complete
+    }, 15000);
+}
+
+// Version: 2024-11-04-v2 - Fixed Chrome cache issue

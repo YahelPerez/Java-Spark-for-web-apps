@@ -29,19 +29,34 @@ public class PriceUpdateWebSocket {
     }
     
     public static void broadcastPriceUpdate(String itemId, double newPrice) {
+        // Obtener el nombre del ítem
+        Item item = Main.getItems().get(itemId);
+        if (item == null) {
+            System.out.println("Item not found: " + itemId);
+            return;
+        }
+
+        System.out.println("Broadcasting to " + sessions.size() + " sessions");
+        
         JsonObject message = new JsonObject();
         message.addProperty("type", "priceUpdate");
         message.addProperty("itemId", itemId);
+        message.addProperty("itemName", item.getName());
         message.addProperty("price", newPrice);
         
         String jsonMessage = gson.toJson(message);
+        System.out.println("WebSocket message: " + jsonMessage);
         
         sessions.forEach(session -> {
             try {
                 if (session.isOpen()) {
                     session.getRemote().sendString(jsonMessage);
+                    System.out.println("Message sent to session: " + session.getRemoteAddress());
+                } else {
+                    System.out.println("Session closed: " + session.getRemoteAddress());
                 }
             } catch (IOException e) {
+                System.err.println("Error sending message: " + e.getMessage());
                 e.printStackTrace();
             }
         });

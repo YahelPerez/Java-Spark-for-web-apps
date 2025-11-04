@@ -25,6 +25,11 @@ public class Main {
     // --- SPRINT 2: Item database ---
     private static Map<String, Item> items = new HashMap<>();
 
+    // Getter para acceder a los items desde otras clases
+    public static Map<String, Item> getItems() {
+        return items;
+    }
+
     // JSON Converter
     private static Gson gson = new Gson();
 
@@ -63,6 +68,8 @@ public class Main {
                     }
                     
                     item.setStartingPrice(newPrice);
+                    // Enviar notificación WebSocket
+                    PriceUpdateWebSocket.broadcastPriceUpdate(id, newPrice);
                     return new SuccessResponse("Price updated successfully");
                 } catch (Exception e) {
                     throw new ValidationException("price", "Invalid price format: " + e.getMessage());
@@ -219,6 +226,11 @@ public class Main {
             String bidId = "bid" + System.currentTimeMillis(); // Simple unique ID generation
             Bid newBid = new Bid(bidId, id, bidderName, amount);
             item.addBid(newBid);
+            
+            // Enviar notificación WebSocket de la actualización del precio
+            System.out.println("Broadcasting price update for item " + id + " with new price: " + amount);
+            PriceUpdateWebSocket.broadcastPriceUpdate(id, amount);
+            System.out.println("Broadcast completed");
 
             // Redirect back to the item page
             res.redirect("/items/" + id);

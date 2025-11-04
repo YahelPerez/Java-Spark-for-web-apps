@@ -1,3 +1,11 @@
-com\rafael\collectibles\Main$User.class
-com\rafael\collectibles\Main$ErrorResponse.class
+com\rafael\collectibles\ErrorResponse.class
+com\rafael\collectibles\Bid.class
+com\rafael\collectibles\Item.class
+com\rafael\collectibles\User.class
+com\rafael\collectibles\PriceUpdateWebSocket.class
+com\rafael\collectibles\exception\ValidationException.class
 com\rafael\collectibles\Main.class
+com\rafael\collectibles\exception\ResourceNotFoundException.class
+com\rafael\collectibles\PriceUpdate.class
+com\rafael\collectibles\exception\GlobalExceptionHandler.class
+com\rafael\collectibles\SuccessResponse.class
